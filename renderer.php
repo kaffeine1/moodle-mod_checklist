@@ -277,7 +277,11 @@ class mod_checklist_renderer extends plugin_renderer_base {
         $out .= $intro;
         $out .= '<br/>';
 
-        if ($status->is_showprogressbar() && $progress) {
+        // Check if we should use the modern card view for students.
+        $usecardview = $this->should_use_card_view($status);
+
+        // Hide progress bar in card view (the card itself shows completion state).
+        if ($status->is_showprogressbar() && $progress && !$usecardview) {
             $out .= $this->progress_bars(
                 $progress->totalitems,
                 $progress->requireditems,
@@ -322,9 +326,6 @@ class mod_checklist_renderer extends plugin_renderer_base {
                 $out .= '<p class="checklistwarning">' . get_string('lockteachermarkswarning', 'checklist') . '</p>';
                 $out .= '<div style="flex-basis:100%; height:0"></div>';
             }
-
-            // Check if we should use the modern card view for students.
-            $usecardview = $this->should_use_card_view($status);
 
             if ($usecardview) {
                 // Modern card view for students.
